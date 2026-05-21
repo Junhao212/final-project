@@ -1,0 +1,268 @@
+:root {
+  color-scheme: light;
+  --bg: #f4f7f2;
+  --panel: #ffffff;
+  --ink: #15201b;
+  --muted: #5f6f67;
+  --line: #dce4dd;
+  --primary: #0f7b6c;
+  --primary-dark: #075d52;
+  --accent: #ffbf3f;
+  --danger: #b63d3d;
+  --shadow: 0 18px 50px rgba(21, 32, 27, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, rgba(15, 123, 108, 0.16), transparent 34%),
+    linear-gradient(315deg, rgba(255, 191, 63, 0.2), transparent 30%),
+    var(--bg);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app-shell {
+  width: min(100%, 980px);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 28px;
+  display: grid;
+  align-items: center;
+}
+
+.game-panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: clamp(20px, 4vw, 40px);
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: start;
+  margin-bottom: 28px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 0;
+  font-size: clamp(2rem, 6vw, 4.8rem);
+  line-height: 0.96;
+}
+
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(82px, 1fr));
+  gap: 10px;
+  min-width: 188px;
+}
+
+.score-grid > div {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  background: #fbfcfb;
+}
+
+.score-label {
+  display: block;
+  color: var(--muted);
+  font-size: 0.8rem;
+  margin-bottom: 4px;
+}
+
+.score-grid strong {
+  font-size: 1.7rem;
+}
+
+.flag-stage {
+  min-height: 310px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  grid-template-columns: minmax(160px, 0.9fr) minmax(220px, 1.1fr);
+  align-items: center;
+  gap: clamp(18px, 4vw, 48px);
+  padding: clamp(20px, 5vw, 52px);
+  background: #f9fbfa;
+}
+
+.flag {
+  aspect-ratio: 1.45 / 1;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: white;
+  font-size: clamp(5.2rem, 16vw, 10rem);
+  box-shadow: inset 0 -8px 0 rgba(21, 32, 27, 0.04);
+}
+
+.answer-copy p {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.answer-copy h2 {
+  margin-bottom: 0;
+  font-size: clamp(1.7rem, 4vw, 3rem);
+  line-height: 1.05;
+}
+
+.controls {
+  display: grid;
+  gap: 16px;
+  margin-top: 22px;
+}
+
+.model-field {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  font-weight: 700;
+}
+
+.model-field input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 13px 14px;
+  color: var(--ink);
+  background: white;
+}
+
+.model-field input:focus {
+  outline: 3px solid rgba(15, 123, 108, 0.2);
+  border-color: var(--primary);
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+button {
+  border: 0;
+  border-radius: 8px;
+  min-height: 46px;
+  padding: 0 18px;
+  color: white;
+  background: var(--primary);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+button:hover {
+  background: var(--primary-dark);
+}
+
+button.secondary {
+  color: var(--ink);
+  background: var(--accent);
+}
+
+button.secondary:hover {
+  background: #edac22;
+}
+
+button.ghost {
+  color: var(--danger);
+  background: #fff1f1;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.feedback {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-top: 22px;
+  color: var(--muted);
+}
+
+#status {
+  margin-bottom: 0;
+}
+
+.prediction-box {
+  min-width: 180px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  color: var(--muted);
+}
+
+.prediction-box span {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.prediction-box strong {
+  display: block;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 720px) {
+  .app-shell {
+    padding: 14px;
+    align-items: start;
+  }
+
+  .topbar,
+  .feedback {
+    display: grid;
+  }
+
+  .score-grid {
+    width: 100%;
+  }
+
+  .flag-stage {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .button-row button {
+    flex: 1 1 100%;
+  }
+}
