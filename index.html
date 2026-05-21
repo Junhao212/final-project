@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flag Voice Challenge</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/speech@0.8/dist/teachablemachine-speech.min.js"></script>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="game-panel" aria-labelledby="app-title">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Teachable Machine game</p>
+            <h1 id="app-title">Flag Voice Challenge</h1>
+          </div>
+          <div class="score-grid" aria-label="Scorebord">
+            <div>
+              <span class="score-label">Score</span>
+              <strong id="score">0</strong>
+            </div>
+            <div>
+              <span class="score-label">Beste</span>
+              <strong id="best-score">0</strong>
+            </div>
+          </div>
+        </header>
+
+        <section class="flag-stage" aria-live="polite">
+          <div id="flag" class="flag">🇧🇪</div>
+          <div class="answer-copy">
+            <p id="round-count">Vraag 1 van 10</p>
+            <h2 id="country-hint">Zeg de naam van dit land</h2>
+          </div>
+        </section>
+
+        <section class="controls" aria-label="Spelbediening">
+          <label class="model-field" for="model-url">
+            <span>Teachable Machine audio model URL</span>
+            <input
+              id="model-url"
+              type="url"
+              placeholder="https://teachablemachine.withgoogle.com/models/..."
+              autocomplete="off"
+            />
+          </label>
+
+          <div class="button-row">
+            <button id="start-btn" type="button">Start microfoon</button>
+            <button id="skip-btn" type="button" class="secondary">Volgende vlag</button>
+            <button id="reset-btn" type="button" class="ghost">Reset score</button>
+          </div>
+        </section>
+
+        <section class="feedback" aria-label="Feedback">
+          <p id="status">Plak je Teachable Machine model-link en druk op start.</p>
+          <div class="prediction-box">
+            <span>Laatst gehoord</span>
+            <strong id="prediction">-</strong>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
