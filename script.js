@@ -23,6 +23,7 @@ const roundCountEl = document.querySelector("#round-count");
 const countryHintEl = document.querySelector("#country-hint");
 const modelUrlEl = document.querySelector("#model-url");
 const startBtn = document.querySelector("#start-btn");
+const stopBtn = document.querySelector("#stop-btn");
 const skipBtn = document.querySelector("#skip-btn");
 const resetBtn = document.querySelector("#reset-btn");
 const statusEl = document.querySelector("#status");
@@ -71,6 +72,12 @@ function render() {
 
 function setStatus(message) {
   statusEl.textContent = message;
+}
+
+function setListeningState(isListening) {
+  startBtn.disabled = isListening;
+  stopBtn.disabled = !isListening;
+  startBtn.textContent = isListening ? "Luistert..." : "Start microfoon";
 }
 
 function setModelCheck(message, type = "") {
@@ -214,16 +221,27 @@ function startSpeechFallback() {
 }
 
 async function startGame() {
-  startBtn.disabled = true;
-  startBtn.textContent = "Luistert...";
+  setListeningState(true);
 
   try {
     await startTeachableMachine();
   } catch (error) {
-    startBtn.disabled = false;
-    startBtn.textContent = "Start microfoon";
+    setListeningState(false);
     setStatus(error.message);
   }
+}
+
+function stopGame() {
+  if (recognizer && recognizer.isListening()) {
+    recognizer.stopListening();
+  }
+
+  if (recognition) {
+    recognition.stop();
+  }
+
+  setListeningState(false);
+  setStatus("Microfoon is gestopt.");
 }
 
 function resetScore() {
@@ -236,6 +254,7 @@ function resetScore() {
 
 modelUrlEl.value = localStorage.getItem(STORAGE_KEYS.modelUrl) || "";
 startBtn.addEventListener("click", startGame);
+stopBtn.addEventListener("click", stopGame);
 skipBtn.addEventListener("click", goToNextRound);
 resetBtn.addEventListener("click", resetScore);
 render();
