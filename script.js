@@ -27,6 +27,7 @@ const skipBtn = document.querySelector("#skip-btn");
 const resetBtn = document.querySelector("#reset-btn");
 const statusEl = document.querySelector("#status");
 const predictionEl = document.querySelector("#prediction");
+const modelCheckEl = document.querySelector("#model-check");
 
 let score = 0;
 let bestScore = Number(localStorage.getItem(STORAGE_KEYS.bestScore)) || 0;
@@ -42,6 +43,17 @@ function normalizeAnswer(value) {
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z\s]/g, "")
     .trim();
+}
+
+function isNoiseLabel(label) {
+  const normalizedLabel = normalizeAnswer(label);
+  return ["background noise", "background", "noise", "unknown"].includes(
+    normalizedLabel,
+  );
+}
+
+function expectedModelLabels() {
+  return countries.map((country) => normalizeAnswer(country.name));
 }
 
 function currentCountry() {
@@ -61,6 +73,31 @@ function setStatus(message) {
   statusEl.textContent = message;
 }
 
+function setModelCheck(message, type = "") {
+  modelCheckEl.textContent = message;
+  modelCheckEl.className = `model-check ${type}`.trim();
+}
+
+function updateModelLabelCheck(labels) {
+  const normalizedLabels = labels.map(normalizeAnswer).filter(Boolean);
+  const presentLabels = expectedModelLabels().filter((label) =>
+    normalizedLabels.includes(label),
+  );
+  const missingLabels = expectedModelLabels().filter(
+    (label) => !normalizedLabels.includes(label),
+  );
+
+  if (missingLabels.length === 0) {
+    setModelCheck("Model check: alle land-labels zitten in je Teachable Machine model.", "ready");
+    return;
+  }
+
+  setModelCheck(
+    `Model check: ${presentLabels.length}/${countries.length} land-labels gevonden. Mist nog: ${missingLabels.join(", ")}.`,
+    "warning",
+  );
+}
+
 function saveBestScore() {
   if (score > bestScore) {
     bestScore = score;
@@ -76,6 +113,7 @@ function goToNextRound() {
 
 function checkAnswer(rawAnswer) {
   if (!rawAnswer || answeredThisRound) return;
+  if (isNoiseLabel(rawAnswer)) return;
 
   const country = currentCountry();
   const normalizedAnswer = normalizeAnswer(rawAnswer);
@@ -122,6 +160,7 @@ async function startTeachableMachine() {
   setStatus("Model aan het laden...");
   await recognizer.ensureModelLoaded();
   const labels = recognizer.wordLabels();
+  updateModelLabelCheck(labels);
 
   recognizer.listen(
     (result) => {
@@ -132,7 +171,7 @@ async function startTeachableMachine() {
 
       predictionEl.textContent = `${label} (${Math.round(confidence * 100)}%)`;
 
-      if (confidence >= 0.75) {
+      if (confidence >= 0.75 && !isNoiseLabel(label)) {
         checkAnswer(label);
       }
     },
