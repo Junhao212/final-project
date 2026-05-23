@@ -1,7 +1,7 @@
 const countries = [
   { name: "Belgie", flag: "🇧🇪", aliases: ["belgie", "belgium", "belgië"] },
   { name: "Frankrijk", flag: "🇫🇷", aliases: ["frankrijk", "france"] },
-  { name: "Duitsland", flag: "🇩🇪", aliases: ["duitsland", "germany"] },
+  { name: "Duitsland", flag: "🇩🇪", aliases: ["duitsland", "duistland", "germany"] },
   { name: "Nederland", flag: "🇳🇱", aliases: ["nederland", "netherlands", "holland"] },
   { name: "Spanje", flag: "🇪🇸", aliases: ["spanje", "spain"] },
   { name: "Italie", flag: "🇮🇹", aliases: ["italie", "italië", "italy"] },
@@ -15,6 +15,8 @@ const STORAGE_KEYS = {
   bestScore: "flagVoiceBestScore",
   modelUrl: "flagVoiceModelUrl",
 };
+
+const DEFAULT_MODEL_URL = "https://teachablemachine.withgoogle.com/models/503N_0-42/";
 
 const scoreEl = document.querySelector("#score");
 const bestScoreEl = document.querySelector("#best-score");
@@ -53,10 +55,6 @@ function isNoiseLabel(label) {
   );
 }
 
-function expectedModelLabels() {
-  return countries.map((country) => normalizeAnswer(country.name));
-}
-
 function currentCountry() {
   return countries[currentIndex % countries.length];
 }
@@ -87,11 +85,12 @@ function setModelCheck(message, type = "") {
 
 function updateModelLabelCheck(labels) {
   const normalizedLabels = labels.map(normalizeAnswer).filter(Boolean);
-  const presentLabels = expectedModelLabels().filter((label) =>
-    normalizedLabels.includes(label),
+  const presentLabels = countries.filter((country) =>
+    country.aliases.some((alias) => normalizedLabels.includes(normalizeAnswer(alias))),
   );
-  const missingLabels = expectedModelLabels().filter(
-    (label) => !normalizedLabels.includes(label),
+  const missingLabels = countries.filter(
+    (country) =>
+      !country.aliases.some((alias) => normalizedLabels.includes(normalizeAnswer(alias))),
   );
 
   if (missingLabels.length === 0) {
@@ -100,7 +99,7 @@ function updateModelLabelCheck(labels) {
   }
 
   setModelCheck(
-    `Model check: ${presentLabels.length}/${countries.length} land-labels gevonden. Mist nog: ${missingLabels.join(", ")}.`,
+    `Model check: ${presentLabels.length}/${countries.length} land-labels gevonden. Mist nog: ${missingLabels.map((country) => country.name).join(", ")}.`,
     "warning",
   );
 }
@@ -252,7 +251,7 @@ function resetScore() {
   setStatus("Score is gereset.");
 }
 
-modelUrlEl.value = localStorage.getItem(STORAGE_KEYS.modelUrl) || "";
+modelUrlEl.value = localStorage.getItem(STORAGE_KEYS.modelUrl) || DEFAULT_MODEL_URL;
 startBtn.addEventListener("click", startGame);
 stopBtn.addEventListener("click", stopGame);
 skipBtn.addEventListener("click", goToNextRound);
