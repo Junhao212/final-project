@@ -18,6 +18,13 @@ De game checkt na het laden of alle land-labels in het model zitten. Als er iets
 
 Open `index.html` in je browser. Voor microfoon-permissies werkt Chrome meestal het makkelijkst.
 
+## Demo checklist
+
+- Open de live applicatie in een incognito venster.
+- Klik op **Start microfoon** en zeg de naam van de vlag.
+- Toon dat de score omhoog gaat bij een juist antwoord.
+- Toon in DevTools dat `localStorage` de beste score en model-link bewaart.
+
 ## Planning tot deadline
 
 - Dag 1: basisgame, vlaggen, score, localStorage.
