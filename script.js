@@ -55,6 +55,17 @@ function isNoiseLabel(label) {
   );
 }
 
+function countryMatchesLabel(country, label) {
+  const normalizedLabel = normalizeAnswer(label);
+  return country.aliases.some(
+    (alias) => normalizeAnswer(alias) === normalizedLabel,
+  );
+}
+
+function findMatchingCountry(label) {
+  return countries.find((country) => countryMatchesLabel(country, label));
+}
+
 function currentCountry() {
   return countries[currentIndex % countries.length];
 }
@@ -84,14 +95,10 @@ function setModelCheck(message, type = "") {
 }
 
 function updateModelLabelCheck(labels) {
-  const normalizedLabels = labels.map(normalizeAnswer).filter(Boolean);
   const presentLabels = countries.filter((country) =>
-    country.aliases.some((alias) => normalizedLabels.includes(normalizeAnswer(alias))),
+    labels.some((label) => countryMatchesLabel(country, label)),
   );
-  const missingLabels = countries.filter(
-    (country) =>
-      !country.aliases.some((alias) => normalizedLabels.includes(normalizeAnswer(alias))),
-  );
+  const missingLabels = countries.filter((country) => !presentLabels.includes(country));
 
   if (missingLabels.length === 0) {
     setModelCheck("Model check: alle land-labels zitten in je Teachable Machine model.", "ready");
@@ -122,11 +129,9 @@ function checkAnswer(rawAnswer) {
   if (isNoiseLabel(rawAnswer)) return;
 
   const country = currentCountry();
-  const normalizedAnswer = normalizeAnswer(rawAnswer);
-  const acceptedAnswers = country.aliases.map(normalizeAnswer);
   predictionEl.textContent = rawAnswer;
 
-  if (acceptedAnswers.includes(normalizedAnswer)) {
+  if (findMatchingCountry(rawAnswer) === country) {
     answeredThisRound = true;
     score += 1;
     saveBestScore();
